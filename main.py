@@ -27,10 +27,10 @@ X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.30,
 c = [10**i for i in range(-10,11)]
 
 
-svm_list = [SVC(C=c[i], kernel='linear', 
-                random_state=0).fit(X_train, y_train) for i in range(len[c])]
+svm_list = [SVC(C=i, kernel='linear', 
+                random_state=0).fit(X_train, y_train) for i in c]
 
-score = [cross_val_score(st, X_train, y_train, cv=10).mean() for st in svm_list]
+score = [cross_val_score(st, X_train, y_train, cv=30).mean() for st in svm_list]
 
 pos_max_score = np.argmax(score)
 
