@@ -35,26 +35,30 @@ c = [10**i for i in range(-10,11)]
 
 # It is computed some models of SVM with the linear kernel
 # where the C parameter is changed
-svm_list = [SVC(C=i, kernel='linear', 
+svm_list = [SVC(C=i, kernel='linear', max_iter=10000,
                 random_state=0).fit(X_train, y_train) for i in c]
 
 # score of each svm model
-score = [cross_val_score(st, X_train, y_train, cv=30).mean() for st in svm_list]
+score = [cross_val_score(st, X_train, y_train, cv=30, n_jobs=-1).mean() for st in svm_list]
 
 # index of the model with the highest score
 pos_max_score = np.argmax(score)
+penalty = c[pos_max_score]
 
 # Data training with the best svm model
-svm_valid = SVC(C=c[pos_max_score], kernel='linear',
+svm_valid = SVC(C=penalty, kernel='linear', max_iter=10000,
                 random_state=0).fit(X_train, y_train)
 
-
+# support vectors
 s_vectors = svm_valid.support_vectors_
 
+# the dataset for testing is standarizated
 X_test = scaler.transform(X_test)
 
+# predictions of the model
 model = svm_valid.predict(X_test)
 
+# scores of the model
 f1 = mtr.f1_score(y_test,model)
 recall = mtr.recall_score(y_test,model)
 accuracy = mtr.accuracy_score(y_test,model)
@@ -67,3 +71,5 @@ print("         Negative     Positive")
 print("Negative   {0}           {1}".format(tn,fp))
 print("Positive   {0}            {1}".format(fn,tp))
 print("\nF1-score: {0}\nRecall: {1}\nAccuracy: {2}\nPrecision: {3}\nSpecificity: {4}".format(f1,recall,accuracy,precision,specificity))
+print("Support vectors of the model: ", s_vectors)
+print("Penalty parameter of the proper model:", penalty)
