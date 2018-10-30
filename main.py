@@ -32,10 +32,11 @@ X_train = scaler.transform(X_train)
 
 # Several values for the penalty parameter are done
 c = [10**i for i in range(-10,11)]
+print(c)
 
 # It is computed some models of SVM with the linear kernel
 # where the C parameter is changed
-svm_list = [SVC(C=i, kernel='linear', max_iter=10000,
+svm_list = [SVC(C=i, kernel='linear', max_iter=-1,
                 random_state=0).fit(X_train, y_train) for i in c]
 
 # score of each svm model
@@ -46,7 +47,7 @@ pos_max_score = np.argmax(score)
 penalty = c[pos_max_score]
 
 # Data training with the best svm model
-svm_valid = SVC(C=penalty, kernel='linear', max_iter=10000,
+svm_valid = SVC(C=penalty, kernel='linear', max_iter=-1,
                 random_state=0).fit(X_train, y_train)
 
 # support vectors
@@ -71,5 +72,5 @@ print("         Negative     Positive")
 print("Negative   {0}           {1}".format(tn,fp))
 print("Positive   {0}            {1}".format(fn,tp))
 print("\nF1-score: {0}\nRecall: {1}\nAccuracy: {2}\nPrecision: {3}\nSpecificity: {4}".format(f1,recall,accuracy,precision,specificity))
-print("Support vectors of the model: ", s_vectors)
+# print("Support vectors of the model: ", s_vectors)
 print("Penalty parameter of the proper model:", penalty)
